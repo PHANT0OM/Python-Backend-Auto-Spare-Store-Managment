@@ -1,0 +1,20 @@
+[
+  {
+    "id": 20,
+    "name": "تيل فرامل امامي لانوس",
+    "origin": "مصري",
+    "cost": 275,
+    "price": 350,
+    "category_id": 1,
+    "supplier_id": 1
+  },
+  {
+    "id": 67,
+    "name": "تيل فرامل امامي كيا بيكانتو 2012",
+    "origin": "كوري بارتس مول",
+    "cost": 350,
+    "price": 450,
+    "category_id": 1,
+    "supplier_id": 1
+  }
+]
