@@ -8,7 +8,7 @@ class Category(SQLModel, table=True):
     __tablename__ = "Category"
 
     id: int = Field(primary_key=True, sa_column_kwargs={"name": "ID","autoincrement": False})
-    name: str = Field(index=True, unique=True, sa_column_kwargs={"name": "Name"}) # Added unique=True
+    name: str = Field(index=True, unique=True, sa_column_kwargs={"name": "Name"}) 
 
     products: List["Product"] = Relationship(back_populates="category")
 
@@ -52,9 +52,8 @@ class Product(SQLModel, table=True):
     cost: Decimal = Field(sa_column_kwargs={"name": "Cost"})
     price: Decimal = Field(sa_column_kwargs={"name": "Price"})
 
-    # Mapped category_id to CategoryID
+
     category_id: Optional[int] = Field(foreign_key="Category.ID", sa_column_kwargs={"name": "CategoryID"})
-    # Mapped supplier_id to SupplierID
     supplier_id: Optional[int] = Field(foreign_key="Supplier.ID", sa_column_kwargs={"name": "SupplierID"})
 
     category: Optional[Category] = Relationship(back_populates="products")
@@ -71,7 +70,7 @@ class Order(SQLModel, table=True):
     order_date: date = Field(sa_column_kwargs={"name": "OrderDate"})
     total_amount: Decimal = Field(sa_column_kwargs={"name": "TotalAmount"})
     
-    # Mapped customer_id to CustomerID
+
     customer_id: Optional[int] = Field(foreign_key="Customer.ID", sa_column_kwargs={"name": "CustomerID"})
 
     customer: Optional[Customer] = Relationship(back_populates="orders")
@@ -82,7 +81,7 @@ class Order(SQLModel, table=True):
 class Stock(SQLModel, table=True):
     __tablename__ = "Stock"
 
-    # Composite keys mapped to PascalCase columns
+   
     product_id: int = Field(primary_key=True, sa_column_kwargs={"name": "ProductID"},sa_column_args=[ForeignKey("Product.ID")])
     warehouse_id: int = Field(primary_key=True, sa_column_kwargs={"name": "WarehouseID"},sa_column_args=[ForeignKey("Warehouse.ID")])
     quantity: int = Field(sa_column_kwargs={"name": "Quantity"})
@@ -98,7 +97,6 @@ class OrderDetail(SQLModel, table=True):
     product_id: int = Field( primary_key=True, sa_column_kwargs={"name": "ProductID"},sa_column_args=[ForeignKey("Product.ID")])
     price: Decimal = Field(sa_column_kwargs={"name": "Price"})
     quantity: int = Field(sa_column_kwargs={"name": "Quantity"})
-
     order: Order = Relationship(back_populates="details")
     product: Product = Relationship(back_populates="order_details")
 
