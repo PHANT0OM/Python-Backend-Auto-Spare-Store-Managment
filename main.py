@@ -12,10 +12,10 @@ from routers import stock as StockRouter
 app = FastAPI(title="Sadeq Auto Spare Parts API")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allows all origins (good for development)
+    allow_origins=["*"], 
     allow_credentials=True,
-    allow_methods=["*"], # Allows all methods (GET, POST, etc.)
-    allow_headers=["*"], # Allows all headers
+    allow_methods=["*"], 
+    allow_headers=["*"], 
 )
 
 app.include_router(ProductRouter.router, prefix="/apiV4/Products")
