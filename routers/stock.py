@@ -6,6 +6,8 @@ from sqlalchemy.orm import selectinload
 from allmodels.modelsV4 import Stock, Product
 from schemas.Stock import StockCreate, StockRead, StockUpdate
 from sadeq_auto_spare_parts_database import Get_Session
+import schemas.Stock_Stats as Stock_Stats
+
 
 router = APIRouter()
 
@@ -65,7 +67,6 @@ def update_stock(
             detail="Stock record not found. Please Create it first."
         )
 
-    # 2. Update the fields
     update_data = stock_update.model_dump(exclude_unset=True)
     
     for key, value in update_data.items():
@@ -76,3 +77,7 @@ def update_stock(
     session.refresh(db_stock)
     
     return db_stock
+
+@router.get("/StockStats")
+def read_dashboard_stats(session: Session = Depends(Get_Session)):
+    return Stock_Stats.get_inventory_stats(session)
