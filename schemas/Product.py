@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Field
 from decimal import Decimal
 from typing import Optional
 
+
 class CategoryRead(SQLModel):
     name: str 
 
@@ -10,23 +11,21 @@ class SupplierRead(SQLModel):
     name: str 
 
 class ProductBase(SQLModel):
-    id : int
     name: str 
-    origin: str 
+    origin: str
+    code : Optional[str] 
     cost: Decimal
-    price: Decimal 
+    price: Optional[Decimal] 
     category_id: Optional[int] = None
     supplier_id: Optional[int] = None
     
-
 class ProductCreate(ProductBase):
-
     pass
 
 class ProductUpdate(SQLModel):
-    id : Optional[int] = None
     name : Optional[str] = None
     origin : Optional[str] = None
+    code : Optional[str] = None
     cost : Optional[Decimal] = None
     price : Optional[Decimal] = None
     category_id : Optional[int] = None

@@ -5,7 +5,6 @@ class StockRead(SQLModel):
     pass
 
 class WarehouseBase(SQLModel):
-    id: int 
     name : str
 
 class WarehouseCreate(WarehouseBase):

@@ -10,7 +10,7 @@ engine = create_engine(DATABASE_URL, echo=True)
 
 def create_database_and_tables():
     SQLModel.metadata.create_all(engine)
-
+    
 def Get_Session():
     with Session(engine) as session:
         yield session

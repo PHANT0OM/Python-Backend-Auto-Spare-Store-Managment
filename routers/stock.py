@@ -49,15 +49,13 @@ def create_stock(stock_data: StockCreate, session: Session = Depends(Get_Session
 
 @router.put("/UpdateStock", response_model=StockRead)
 def update_stock(
-    product_id: int, 
-    warehouse_id: int, 
     stock_update: StockUpdate, 
     session: Session = Depends(Get_Session)
 ):
-  
+    
     statement = select(Stock).where(
-        Stock.product_id == product_id,
-        Stock.warehouse_id == warehouse_id
+        Stock.product_id == stock_update.product_id,
+        Stock.warehouse_id == stock_update.warehouse_id
     )
     db_stock = session.exec(statement).first()
 
@@ -67,6 +65,7 @@ def update_stock(
             detail="Stock record not found. Please Create it first."
         )
 
+    # 2. Update the fields
     update_data = stock_update.model_dump(exclude_unset=True)
     
     for key, value in update_data.items():

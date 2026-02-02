@@ -5,10 +5,8 @@ from pydantic import field_validator
 
 class ProductRead(SQLModel):
    
-    id: int
     name: str
     price: Optional[int]=None 
-    
     model_config = {"from_attributes": True}    
 def validate_phone_number(value : Optional[str]) -> Optional[str]:
     if value is None:
@@ -27,7 +25,6 @@ def validate_phone_number(value : Optional[str]) -> Optional[str]:
 
 class SupplierBase(SQLModel):
 
-    id : int
     name : str
     phone: Optional[str] = None
 
@@ -62,7 +59,8 @@ class SupplierReadProducts(SupplierBase):
 
 class SupplierRead(SupplierBase):
 
-    
+    id: Optional[int]
+    name: str
     model_config = {
         "from_attributes": True 
     }

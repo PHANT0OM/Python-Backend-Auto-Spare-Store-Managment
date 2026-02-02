@@ -2,103 +2,99 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import List, Optional
 from decimal import Decimal
 from datetime import date
-from sqlalchemy import Column, Integer, ForeignKey
-
-class Category(SQLModel, table=True):
-    __tablename__ = "Category"
-
-    id: int = Field(primary_key=True, sa_column_kwargs={"name": "ID","autoincrement": False})
-    name: str = Field(index=True, unique=True, sa_column_kwargs={"name": "Name"}) 
-
-    products: List["Product"] = Relationship(back_populates="category")
-
-
-class Supplier(SQLModel, table=True):
-    __tablename__ = "Supplier"
-
-    id: int = Field(primary_key=True, sa_column_kwargs={"name": "ID","autoincrement": False})
-    name: str = Field(index=True, sa_column_kwargs={"name": "Name"})
-    phone: Optional[str] = Field(default=None, sa_column_kwargs={"name": "Phone"})
-
-    products: List["Product"] = Relationship(back_populates="supplier")
-  
-
+from sqlalchemy import Column, Integer, ForeignKey,Numeric
 
 class Customer(SQLModel, table=True):
     __tablename__ = "Customer"
 
-    id: int = Field(primary_key=True, sa_column_kwargs={"name": "ID","autoincrement": False})
-    name: str = Field(index=True, sa_column_kwargs={"name": "Name"})
-    phone: Optional[str] = Field(default=None, sa_column_kwargs={"name": "Phone"})
-
-    orders: List["Order"] = Relationship(back_populates="customer")
+    id: Optional[int] = Field(default=None,primary_key=True, sa_column_kwargs={"name": "id"})
+    name: str = Field(index=True, sa_column_kwargs={"name": "name"})
+    phone: str = Field(default=None, sa_column_kwargs={"name": "phone"})
+    transactions: List["Transactions"] = Relationship(back_populates="customer")
 
 
 class Warehouse(SQLModel, table=True):
     __tablename__ = "Warehouse"
 
-    id: int = Field(primary_key=True, sa_column_kwargs={"name": "ID","autoincrement": False})
-    name: str = Field(sa_column_kwargs={"name": "Name"})
-
+    id: Optional[int] = Field(default=None,primary_key=True, sa_column_kwargs={"name": "id"})
+    name: str = Field(sa_column_kwargs={"name": "name"})
     stock_items: List["Stock"] = Relationship(back_populates="warehouse")
 
+class Category(SQLModel, table=True):
+    __tablename__ = "Category"
+
+    id: Optional[int] = Field(default=None,primary_key=True, sa_column_kwargs={"name": "id"})
+    name: str = Field(index=True, unique=True, sa_column_kwargs={"name": "name"}) 
+    product: List["Product"] = Relationship(back_populates="category")
+
+class Supplier(SQLModel, table=True):
+    __tablename__ = "Supplier"
+
+    id: Optional[int] = Field(default=None,primary_key=True, sa_column_kwargs={"name": "id"})
+    name: str = Field(index=True, sa_column_kwargs={"name": "name"})
+    phone: Optional[str] = Field(default=None, sa_column_kwargs={"name": "phone"})
+    product: List["Product"] = Relationship(back_populates="supplier")
 
 class Product(SQLModel, table=True):
     __tablename__ = "Product"
 
-    id: int = Field(primary_key=True, sa_column_kwargs={"name": "ID","autoincrement": False})
-    name: str = Field(index=True, unique=True, sa_column_kwargs={"name": "Name"}) # Added unique
-    origin: str = Field(sa_column_kwargs={"name": "Origin"})
-    cost: Decimal = Field(sa_column_kwargs={"name": "Cost"})
-    price: Decimal = Field(sa_column_kwargs={"name": "Price"})
-
-
-    category_id: Optional[int] = Field(foreign_key="Category.ID", sa_column_kwargs={"name": "CategoryID"})
-    supplier_id: Optional[int] = Field(foreign_key="Supplier.ID", sa_column_kwargs={"name": "SupplierID"})
-
-    category: Optional[Category] = Relationship(back_populates="products")
-    supplier: Optional[Supplier] = Relationship(back_populates="products")
-
-    order_details: List["OrderDetail"] = Relationship(back_populates="product")
+    id: Optional[int] = Field(default=None,primary_key=True, sa_column_kwargs={"name": "id"})
+    name: str = Field(index=True, unique=True, sa_column_kwargs={"name": "name"}) 
+    origin: str = Field(sa_column_kwargs={"name": "origin"})
+    code : Optional[str] = Field(default=None,sa_column_kwargs={"name" : "code"})
+    cost: Decimal = Field(sa_column=Column(Numeric(10, 2)))
+    price: Optional[Decimal] = Field(sa_column=Column(Numeric(10, 2)))
+    category_id: Optional[int] = Field(foreign_key="Category.id", sa_column_kwargs={"name": "category_id"})
+    supplier_id: Optional[int] = Field(default=None,foreign_key="Supplier.id", sa_column_kwargs={"name": "supplier_id"})
+    category: Optional[Category] = Relationship(back_populates="product")
+    supplier: Optional[Supplier] = Relationship(back_populates="product")
+    transaction_details: List["Transactionsdetails"] = Relationship(back_populates="product")
     stock_items: List["Stock"] = Relationship(back_populates="product")
     
 
-class Order(SQLModel, table=True):
-    __tablename__ = "Orders"
-
-    id: int = Field(primary_key=True, sa_column_kwargs={"name": "ID","autoincrement": False})
-    order_date: date = Field(sa_column_kwargs={"name": "OrderDate"})
-    total_amount: Decimal = Field(sa_column_kwargs={"name": "TotalAmount"})
-    
-
-    customer_id: Optional[int] = Field(foreign_key="Customer.ID", sa_column_kwargs={"name": "CustomerID"})
-
-    customer: Optional[Customer] = Relationship(back_populates="orders")
-    details: List["OrderDetail"] = Relationship(back_populates="order")
 
 
 
 class Stock(SQLModel, table=True):
     __tablename__ = "Stock"
-
-   
-    product_id: int = Field(primary_key=True, sa_column_kwargs={"name": "ProductID"},sa_column_args=[ForeignKey("Product.ID")])
-    warehouse_id: int = Field(primary_key=True, sa_column_kwargs={"name": "WarehouseID"},sa_column_args=[ForeignKey("Warehouse.ID")])
-    quantity: int = Field(sa_column_kwargs={"name": "Quantity"})
+    product_id: int = Field(primary_key=True, sa_column_kwargs={"name": "product_id"},sa_column_args=[ForeignKey("Product.id")])
+    warehouse_id: int = Field(primary_key=True, sa_column_kwargs={"name": "warehouse_id"},sa_column_args=[ForeignKey("Warehouse.id")])
+    quantity: int = Field(sa_column_kwargs={"name": "quantity"})
 
     product: Product = Relationship(back_populates="stock_items")
     warehouse: Warehouse = Relationship(back_populates="stock_items")
 
+class Transactions(SQLModel, table=True):
+    __tablename__ = "Transactions"
 
-class OrderDetail(SQLModel, table=True):
-    __tablename__ = "OrderDetails"
+    id: Optional[int] = Field(default=None,primary_key=True, sa_column_kwargs={"name": "id"})
+    transaction_date: date = Field(sa_column_kwargs={"name": "transaction_date"})
+    total_amount: Decimal = Field(sa_column_kwargs={"name": "total_amount"})
+    customer_id: Optional[int] = Field(foreign_key="Customer.id", sa_column_kwargs={"name": "customer_id"})
 
-    order_id: int = Field( primary_key=True, sa_column_kwargs={"name": "OrderID"},sa_column_args=[ForeignKey("Orders.ID")])
-    product_id: int = Field( primary_key=True, sa_column_kwargs={"name": "ProductID"},sa_column_args=[ForeignKey("Product.ID")])
-    price: Decimal = Field(sa_column_kwargs={"name": "Price"})
-    quantity: int = Field(sa_column_kwargs={"name": "Quantity"})
-    order: Order = Relationship(back_populates="details")
-    product: Product = Relationship(back_populates="order_details")
+    customer: Optional[Customer] = Relationship(back_populates="transactions")
+    details: List["Transactionsdetails"] = Relationship(back_populates="transactions")
+
+class Transactionsdetails(SQLModel, table=True):
+    __tablename__ = "Transactionsdetails"
+
+    transaction_id: int = Field(default=None, primary_key=True, sa_column_kwargs={"name": "transaction_id"},sa_column_args=[ForeignKey("Transactions.id")])
+    product_id: int = Field( primary_key=True, sa_column_kwargs={"name": "product_id"},sa_column_args=[ForeignKey("Product.id")])
+    price: Decimal = Field(sa_column_kwargs={"name": "price"})
+    quantity: int = Field(sa_column_kwargs={"name": "quantity"})
+    transactions: Transactions = Relationship(back_populates="details")
+    product: Product = Relationship(back_populates="transaction_details")
+    @property
+    def product_name(self) -> str:
+        return self.product.name if self.product else "Unknown"
+
+    @property
+    def total_item_price(self) -> Decimal:
+        return (self.price * self.quantity) if self.price else 0
+    @property
+    def productid(self) -> int:
+        """Maps 'product_id' (Database) to 'productid' (Schema)"""
+        return self.product_id
 
 
 

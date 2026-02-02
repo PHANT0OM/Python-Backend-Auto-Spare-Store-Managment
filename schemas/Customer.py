@@ -26,19 +26,17 @@ class OrderRead(SQLModel):
 
 class CustomerBase(SQLModel):
     
-    id : int 
     name : str
-    phone : Optional [str] = None
+    phone : str
 
 class CustomerCreate(CustomerBase):
     
     @field_validator("phone")
     @classmethod
     def Validate_phone(cls, value : Optional[str] ) -> Optional[str]:
-        return validate_phone_number(value)
+        return validate_phone_number(value) 
     
 class CustomerUpdate(SQLModel):
-    id : Optional[int] = None
     name : Optional[str] = None
     phone : Optional[str] = None
     @field_validator("phone")
@@ -47,6 +45,8 @@ class CustomerUpdate(SQLModel):
         return validate_phone_number(value)
     
 class CustomerRead(CustomerBase):
+    
+    id : int    
     orders: List[OrderRead] = []
     
     model_config = { "from_attributes": True }
