@@ -49,3 +49,9 @@ class StockRead(StockBase):
     model_config = {
         "from_attributes": True 
     }
+
+class PaginatedStockRead(SQLModel):
+    items: list[StockRead]
+    total: int
+    skip: int
+    limit: int

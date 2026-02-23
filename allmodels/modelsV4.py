@@ -3,13 +3,14 @@ from typing import List, Optional
 from decimal import Decimal
 from datetime import date
 from sqlalchemy import Column, Integer, ForeignKey,Numeric
-
+import sqlalchemy as sa
 class Customer(SQLModel, table=True):
     __tablename__ = "Customer"
 
     id: Optional[int] = Field(default=None,primary_key=True, sa_column_kwargs={"name": "id"})
-    name: str = Field(index=True, sa_column_kwargs={"name": "name"})
-    phone: str = Field(default=None, sa_column_kwargs={"name": "phone"})
+    name: str = Field(sa_column=Column("name", sa.NVARCHAR(50), index=True, nullable=False))
+    phone: str = Field(sa_column=Column("phone", sa.NVARCHAR(20), nullable=False))
+    balance: Decimal = Field(default=Decimal(0), sa_column=Column("balance", Numeric(10, 2), nullable=False, server_default="0.00"))
     transactions: List["Transactions"] = Relationship(back_populates="customer")
 
 
@@ -17,34 +18,34 @@ class Warehouse(SQLModel, table=True):
     __tablename__ = "Warehouse"
 
     id: Optional[int] = Field(default=None,primary_key=True, sa_column_kwargs={"name": "id"})
-    name: str = Field(sa_column_kwargs={"name": "name"})
+    name: str = Field(sa_column=Column("name", sa.NVARCHAR(150), unique=True, nullable=False))
     stock_items: List["Stock"] = Relationship(back_populates="warehouse")
 
 class Category(SQLModel, table=True):
     __tablename__ = "Category"
 
     id: Optional[int] = Field(default=None,primary_key=True, sa_column_kwargs={"name": "id"})
-    name: str = Field(index=True, unique=True, sa_column_kwargs={"name": "name"}) 
+    name: str = Field(sa_column=Column("name", sa.NVARCHAR(150), unique=True, index=True, nullable=False))
     product: List["Product"] = Relationship(back_populates="category")
 
 class Supplier(SQLModel, table=True):
     __tablename__ = "Supplier"
 
     id: Optional[int] = Field(default=None,primary_key=True, sa_column_kwargs={"name": "id"})
-    name: str = Field(index=True, sa_column_kwargs={"name": "name"})
-    phone: Optional[str] = Field(default=None, sa_column_kwargs={"name": "phone"})
+    name: str = Field(sa_column=Column("name", sa.NVARCHAR(150), index=True, nullable=False))
+    phone: str = Field(sa_column=Column("phone", sa.NVARCHAR(20), nullable=False))
     product: List["Product"] = Relationship(back_populates="supplier")
 
 class Product(SQLModel, table=True):
     __tablename__ = "Product"
 
     id: Optional[int] = Field(default=None,primary_key=True, sa_column_kwargs={"name": "id"})
-    name: str = Field(index=True, unique=True, sa_column_kwargs={"name": "name"}) 
-    origin: str = Field(sa_column_kwargs={"name": "origin"})
-    code : Optional[str] = Field(default=None,sa_column_kwargs={"name" : "code"})
-    cost: Decimal = Field(sa_column=Column(Numeric(10, 2)))
-    price: Optional[Decimal] = Field(sa_column=Column(Numeric(10, 2)))
-    category_id: Optional[int] = Field(foreign_key="Category.id", sa_column_kwargs={"name": "category_id"})
+    name: str = Field(sa_column=Column("name", sa.NVARCHAR(150), index=True, nullable=False))
+    origin: str = Field(sa_column=Column("origin", sa.NVARCHAR(50), nullable=False))
+    code: Optional[str] = Field(default=None, sa_column=Column("code", sa.NVARCHAR(50), unique=True, nullable=True))
+    cost: Decimal = Field(sa_column=Column("cost", Numeric(10, 2), nullable=False))
+    price: Optional[Decimal] = Field(default=None, sa_column=Column("price", Numeric(10, 2), nullable=True))
+    category_id: Optional[int] = Field(default=None, foreign_key="Category.id", sa_column_kwargs={"name": "category_id"})
     supplier_id: Optional[int] = Field(default=None,foreign_key="Supplier.id", sa_column_kwargs={"name": "supplier_id"})
     category: Optional[Category] = Relationship(back_populates="product")
     supplier: Optional[Supplier] = Relationship(back_populates="product")

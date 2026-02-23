@@ -46,7 +46,7 @@ def create_transaction(transaction_data: TransactionCreate, session: Session = D
             session.rollback()
             raise HTTPException(
                 status_code=400, 
-                detail=f"No stock record found for Product ID {item['product_id']}"
+                detail=f"No stock record found for Product ID {item['productid']}"
             )
 
         
@@ -54,7 +54,7 @@ def create_transaction(transaction_data: TransactionCreate, session: Session = D
             session.rollback()
             raise HTTPException(
                 status_code=400, 
-                detail=f"Insufficient stock for Product ID {item['product_id']}. Available: {stock_record.quantity}, Requested: {item['quantity']}"
+                detail=f"Insufficient stock for Product ID {item['productid']}. Available: {stock_record.quantity}, Requested: {item['quantity']}"
             )
 
         
@@ -68,18 +68,16 @@ def create_transaction(transaction_data: TransactionCreate, session: Session = D
              session.rollback()
              raise HTTPException(status_code=400, detail="Price is required for every item (Bargaining Mode)")
 
-        # --- C. SAVE DETAIL ---
         db_detail = Transactionsdetails(
             transaction_id=db_transaction.id,
             product_id=item['productid'],
             quantity=item['quantity'],
-            price=final_price  # <--- Using the bargained price
+            price=final_price  
         )
         
         calculated_total += (final_price * item['quantity'])
         session.add(db_detail)
 
-    # 4. Finalize
     db_transaction.total_amount = calculated_total
     session.add(db_transaction)
 

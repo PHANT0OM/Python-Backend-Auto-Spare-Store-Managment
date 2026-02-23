@@ -1,12 +1,7 @@
 from sqlmodel import SQLModel, create_engine, Session
-import os
-from dotenv import load_dotenv
+from config import settings
 
-load_dotenv() 
-
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(settings.DATABASE_URL, echo=(settings.ENVIRONMENT != "production"))
 
 def create_database_and_tables():
     SQLModel.metadata.create_all(engine)
@@ -14,5 +9,3 @@ def create_database_and_tables():
 def Get_Session():
     with Session(engine) as session:
         yield session
-
-    

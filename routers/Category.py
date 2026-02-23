@@ -18,7 +18,7 @@ def create_category(category: CategoryCreate, session: Session = Depends(Get_Ses
         session.commit()
         session.refresh(db_category)
         return db_category
-    except:
+    except Exception:
         session.rollback()
         raise HTTPException(
             status_code=400, 

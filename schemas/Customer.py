@@ -18,9 +18,9 @@ def validate_phone_number(value : Optional[str]) -> Optional[str]:
     formatted_number = phonenumbers.format_number(parsed_number, phonenumbers.PhoneNumberFormat.NATIONAL)
     return formatted_number.replace(" ", "").replace("-","")
    
-class OrderRead(SQLModel):
+class transactionsRead(SQLModel):
     id : int 
-    order_date : date
+    transaction_date : date
     total_amount : float
     model_config = {"from_attributes" : True}
 
@@ -47,6 +47,6 @@ class CustomerUpdate(SQLModel):
 class CustomerRead(CustomerBase):
     
     id : int    
-    orders: List[OrderRead] = []
+    transactions: List[transactionsRead] = []
     
     model_config = { "from_attributes": True }

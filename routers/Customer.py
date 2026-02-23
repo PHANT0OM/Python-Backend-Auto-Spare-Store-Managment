@@ -8,7 +8,7 @@ from sadeq_auto_spare_parts_database import Get_Session
 
 router = APIRouter()
 
-@router.get("/CustomerRead",response_model=list[CustomerRead],status_code=201)
+@router.get("/CustomerRead",response_model=list[CustomerRead],status_code=200)
 
 def read_customers(session: Session = Depends(Get_Session)):
 
@@ -16,7 +16,7 @@ def read_customers(session: Session = Depends(Get_Session)):
     return customers 
 
 @router.post("/CreateCustomer", response_model=CustomerCreate, status_code=201)
-def create_product(product_data: CustomerCreate, session: Session = Depends(Get_Session)):
+def create_Customer(product_data: CustomerCreate, session: Session = Depends(Get_Session)):
 
     
     db_customer = Customer.model_validate(product_data)
@@ -28,7 +28,7 @@ def create_product(product_data: CustomerCreate, session: Session = Depends(Get_
     return db_customer
 
 @router.put("/UpdateCustomers", response_model=CustomerRead)
-def update_product(customer_id: int, customer_update: CustomerUpdate, session: Session = Depends(Get_Session)):
+def update_Customer(customer_id: int, customer_update: CustomerUpdate, session: Session = Depends(Get_Session)):
  
     db_customers = session.get(Customer, customer_id)   
     if not db_customers:

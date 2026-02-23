@@ -33,5 +33,12 @@ class ProductUpdate(SQLModel):
 
 class ProductRead(ProductBase):
     id: int 
-    category_name: Optional[CategoryRead] = None
-    supplier_name: Optional[SupplierRead] = None
+    category: Optional[CategoryRead] = None
+    supplier: Optional[SupplierRead] = None
+
+class PaginatedProductRead(SQLModel):
+    items: list[ProductRead]
+    total: int
+    skip: int
+    limit: int
+

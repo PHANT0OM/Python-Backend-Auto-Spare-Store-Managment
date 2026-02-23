@@ -10,7 +10,7 @@ from sadeq_auto_spare_parts_database import Get_Session
 router  = APIRouter()
 
 
-@router.get("/ReadWarehouses",response_model=list[WarehouseRead], status_code=201)
+@router.get("/ReadWarehouses",response_model=list[WarehouseRead], status_code=200)
 def read_warehouses(session: Session = Depends(Get_Session)):
 
 
@@ -27,7 +27,7 @@ def create_warehouse(warehouse: WarehouseCreate, session: Session = Depends(Get_
         session.commit()
         session.refresh(db_Warehouse)
         return db_Warehouse
-    except:
+    except Exception:
         session.rollback()
         raise HTTPException(
             status_code=400, 
